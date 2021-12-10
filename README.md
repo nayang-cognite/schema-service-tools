@@ -3,3 +3,6 @@
 - this is the python tool used to test schema-service apis
 - this script is written in python
 - this is an early version
+- cat-2 put some comments
+- cat-2 add additional notes
+- cat-2 add yet some more notes
