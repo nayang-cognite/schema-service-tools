@@ -19,3 +19,4 @@
 - light-4 add notes
 - light-4 2nd note
 - light-6 1st note
+- light-7 ist note
