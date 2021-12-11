@@ -14,3 +14,4 @@
 - cat-7 add notes
 - cat-10 add notes
 - light-1 add notes
+- light-3 add notes
