@@ -23,3 +23,4 @@
 - light-8 1st note
 - light-6 new light-6 1st message
 - light-7 1st note
+- light-7 2ne note
