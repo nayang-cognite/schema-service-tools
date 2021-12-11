@@ -18,3 +18,4 @@
 - light-2 add some notes
 - light-4 add notes
 - light-4 2nd note
+- light-6 1st note
