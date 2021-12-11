@@ -15,3 +15,4 @@
 - cat-10 add notes
 - light-1 add notes
 - light-3 add notes
+- light-3 add second note
