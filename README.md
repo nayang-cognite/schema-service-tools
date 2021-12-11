@@ -1,5 +1,8 @@
 # schema-service-tools
 # Background
+* a fine day
+* another fine day
+* third fine day
 - this is the python tool used to test schema-service apis
 - this script is written in python
 - this is an early version
@@ -27,3 +30,12 @@
 - light-7 2ne note
 - test-1 1st note
 - test-2 2nd note
+- light-5 1st note
+- light-5 3rd note
+- light-5 4th note
+- light-5 5th note
+- test-1 1st note
+- test-2 2nd note
+- light-5 1st note
+- light-5 3rd note
+- light-5 4th note
