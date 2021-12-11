@@ -16,3 +16,5 @@
 - light-1 add notes
 - light-3 add notes
 - light-2 add some notes
+- light-4 add notes
+- light-4 2nd note
