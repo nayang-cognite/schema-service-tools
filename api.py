@@ -31,10 +31,11 @@ def api(operationName, query, variables, data_api=False):
         print("---") 
         pp.pprint(res.status_code)
         pp.pprint(res.reason)
-        pp.pprint(res.json())
+        data = res.json()['data']
         print("---") 
-        #raw = res.json()['data']['listSchemas'][0]['versions'][0]['_generatedAPI']
-        #printDataApi(raw)
+        pp.pprint(data)
+        if "listSchemas" in data:
+            print(data["listSchemas"]["edges"][0]["node"]["versions"][0]["_generatedAPI"])
     except Exception as e:
         logging.error("exception:")
         logging.error(e)
@@ -72,8 +73,11 @@ def list_schemas():
         }
     """
     query = """
-        query %s {
-            listSchemas {
+        query %s (
+            $after: String
+            $first: Int
+        ){
+        listSchemas(after: $after, first: $first) {
                edges {
                    cursor
                    node %s
@@ -87,6 +91,10 @@ def list_schemas():
             }
         }
     """ % (operationName, select)
+    variables = {
+        "after": None,
+        "first": None,
+    }
     print("list_schemas")
     api(operationName, query, {})
 
@@ -102,7 +110,7 @@ def introspection_query():
         }   
     """
     fragments = """
-        fragment FullType on __Type {
+    fragment FullType on __Type {
           kind
           name
           description
@@ -176,7 +184,7 @@ def introspection_query():
             }
           }
         }
-    """
+    """ 
     query = """
         query %s {
             __schema {
@@ -188,7 +196,33 @@ def introspection_query():
     print("introspection_query")
     api(operationName, query, {})
 
-def create_schemas(schemaExternalId):
+def introspection_query_type(typeName):
+    operationName = "IntrospectionQueryOnType"
+    select = """
+      __type(name: "%s") {
+        fields {
+          name
+          type {
+            name
+            kind
+            ofType {
+              name
+              kind
+            }
+          }
+        }
+      }
+    """ % (typeName)
+    query = """
+        query %s {
+            %s
+        }
+    """ % (operationName, select)
+    print("introspection_query_on_type")
+    print(query)
+    api(operationName, query, {})
+
+def create_one_schema(schemaExternalId):
     operationName = "CreateSchema"
     query = """
         mutation %s (
@@ -204,7 +238,7 @@ def create_schemas(schemaExternalId):
         "schemaExternalId": schemaExternalId,
         "schema": "type Equipment @view {Id: Int!}" 
     }
-    print("create_schemas")
+    print("create_one_schema")
     api(operationName, query, variables)
 
 def update_schemas(schemaExternalId):
@@ -248,7 +282,15 @@ if __name__=="__main__":
     if (text=="y"):
         text = input("Create schema \"%s\"? [y|n]" % schemaExternalId)
         if (text=="y") :
-            create_schemas(schemaExternalId)
+            create_one_schema(schemaExternalId)
+        text = input("Create multiple schemas for \"%s\", enter a number " % schemaExternalId)
+        try:
+            numSchemas = int(text)
+            if (numSchemas>0) :
+                for x in range(0,numSchemas):
+                    create_one_schema("%s%d" % (schemaExternalId, x))
+        except ValueError:
+            pass
         text = input("Update schema \"%s\"? [y|n]" % schemaExternalId)
         if (text=="y") :
             update_schemas(schemaExternalId)
