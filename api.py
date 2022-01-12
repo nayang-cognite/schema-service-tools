@@ -26,16 +26,26 @@ def api(operationName, query, variables, data_api=False):
         "variables": variables
     }
     try:
+        print(url)
         res = requests.post(url, headers=headers, json=json_body, verify=False)
         pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(json_body)
         print("---") 
-        pp.pprint(res.status_code)
-        pp.pprint(res.reason)
-        data = res.json()['data']
+        pp.pprint("%d %s" % (res.status_code, res.reason))
+        for key in ['data', 'errors']:
+            print("Response \"%s\"" % key)
+            if key=="errors" and key in res.json():
+                cnt = 1 
+                print("\terror %d" % cnt)
+                for error in res.json()[key]:
+                    for errorKey in ['message', 'locations', 'path', 'extensions']:
+                        print("\t%+10s: %s" % (errorKey, error[errorKey]))
+                    cnt+=1
+            if key=="data":
+                if "listSchemas" in res.json()[key]:
+                    #pp.pprint(data["listSchemas"]["edges"][0]["node"]["versions"][0]["_generatedAPI"])
+                    pp.pprint(res.json()[key])
         print("---") 
-        pp.pprint(data)
-        if "listSchemas" in data:
-            print(data["listSchemas"]["edges"][0]["node"]["versions"][0]["_generatedAPI"])
     except Exception as e:
         logging.error("exception:")
         logging.error(e)
@@ -93,10 +103,9 @@ def list_schemas():
     """ % (operationName, select)
     variables = {
         "after": None,
-        "first": None,
+        "first": 2,
     }
-    print("list_schemas")
-    api(operationName, query, {})
+    api(operationName, query, variables)
 
 def introspection_query():
     operationName = "IntrospectionQuery"
